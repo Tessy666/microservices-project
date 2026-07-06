@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+  name: cpu-demo
+
+spec:
+  containers:
+  - name: cpu-demo
+
+    image: polinux/stress
+
+    command:
+    - stress
+
+    args:
+    - "--cpu"
+    - "2"
+
+    resources:
+      requests:
+        cpu: "100m"
+
+      limits:
+        cpu: "200m"
