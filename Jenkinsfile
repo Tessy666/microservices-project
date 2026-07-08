@@ -5,51 +5,39 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                echo 'Pipeline Started...'
-                sh 'pwd'
-                sh 'ls -la'
+                checkout scm
             }
         }
 
-        stage('Verify Git') {
+        stage('Verify Tools') {
             steps {
                 sh 'git --version'
-            }
-        }
-
-        stage('Verify Docker') {
-            steps {
                 sh 'docker --version'
-            }
-        }
-
-        stage('Verify kubectl') {
-            steps {
                 sh 'kubectl version --client'
-            }
-        }
-
-        stage('Verify Helm') {
-            steps {
                 sh 'helm version'
             }
         }
 
+        stage('Build Backend Image') {
+            steps {
+                dir('backend') {
+                    sh 'docker build -t tessydocker/flask-backend:jenkins-v1 .'
+                }
+            }
+        }
     }
 
     post {
-
-        always {
-            echo 'Pipeline Finished'
-        }
-
         success {
-            echo 'Everything is working!'
+            echo 'Backend image built successfully!'
         }
 
         failure {
-            echo 'Something failed.'
+            echo 'Pipeline failed.'
         }
 
+        always {
+            echo 'Pipeline finished.'
+        }
     }
 }
